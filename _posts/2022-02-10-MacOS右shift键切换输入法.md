@@ -73,7 +73,42 @@ https://karabiner-elements.pqrs.org/
 
 
 
-打开系统偏好设置-键盘-快捷键-输入法-勾选“选择上一个输入法”， 这里默认是 ^ + 空格键，双击它， 录入 "left_control" + "left_option" + "left_command" + 0， 至此配置完成。
+打开系统偏好设置-键盘-快捷键-输入法-勾选”选择上一个输入法”， 这里默认是 ^ + 空格键，双击它， 录入 “left_control” + “left_option” + “left_command” + 0， 至此配置完成。
+
+
+
+## 2026年更新方案（更简洁）
+
+新版 Karabiner-Elements 支持在界面中直接添加自定义规则，无需手动创建 JSON 文件。
+
+打开 Karabiner-Elements，进入 **Complex modifications** 选项卡，点击 **Add your own rule**，粘贴以下规则：
+
+```json
+{
+    “description”: “Right Shift 单击切换输入法 (自定义延迟)”,
+    “manipulators”: [
+        {
+            “from”: {
+                “key_code”: “right_shift”,
+                “modifiers”: { “optional”: [“any”] }
+            },
+            “parameters”: { “basic.to_if_alone_timeout_milliseconds”: 250 },
+            “to”: [{ “key_code”: “right_shift” }],
+            “to_if_alone”: [
+                {
+                    “key_code”: “spacebar”,
+                    “modifiers”: [“left_control”]
+                }
+            ],
+            “type”: “basic”
+        }
+    ]
+}
+```
+
+点击 **Save** 后启用该规则即可。
+
+此方案将右 shift 单击绑定为 `Control + 空格`（macOS 默认的切换输入法快捷键），相比旧方案更简洁，不需要额外修改系统快捷键设置，直接生效。
 
 
 
