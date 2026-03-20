@@ -1200,7 +1200,4 @@ html, body {
   }
 }
 
-/* 6. 对包含大量内容的容器开启 contain，限制重排范围 */
-.post-container {
-  contain: layout style;
-}
+/* 6. contain: layout style 已移除 —— 该属性会阻断 touch 事件冒泡，导致 iOS 无法在文章内容区滑动 */
