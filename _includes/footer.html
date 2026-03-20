@@ -94,11 +94,7 @@
                     Copyright &copy; {{ site.title }} {{ site.time | date: '%Y' }}
                     <br>
                     Theme on <a href="{{ site.github_repo }}">GitHub</a> |
-                    <iframe
-                        style="margin-left: 2px; margin-bottom:-5px;"
-                        frameborder="0" scrolling="0" width="100px" height="20px"
-                        src="https://ghbtns.com/github-btn.html?user={{ site.github_username }}&repo={{ site.github_username }}.github.io&type=star&count=true" >
-                    </iframe>
+                    <!-- GitHub star button removed to avoid blocking page load -->
                 </p>
             </div>
         </div>
@@ -238,48 +234,46 @@
     }
 </script>
 
-<!--fastClick.js -->
+<!--fastClick.js: loaded after idle to avoid blocking scroll -->
 <script>
-    async("//cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js", function(){
-        var $nav = document.querySelector("nav");
-        if($nav) FastClick.attach($nav);
-    })
+    function _loadFastClick() {
+        async("//cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js", function(){
+            var $nav = document.querySelector("nav");
+            if($nav) FastClick.attach($nav);
+        });
+    }
+    if (window.requestIdleCallback) {
+        requestIdleCallback(_loadFastClick, { timeout: 2000 });
+    } else {
+        window.addEventListener('load', function() { setTimeout(_loadFastClick, 500); });
+    }
 </script>
 
 
-<!-- Google Analytics -->
-{% if site.ga_track_id %}
-<script>
-    // dynamic User by Hux
-    var _gaId = '{{ site.ga_track_id }}';
-    var _gaDomain = '{{ site.ga_domain }}';
-
-    // Originial
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-    ga('create', _gaId, _gaDomain);
-    ga('send', 'pageview');
-</script>
-{% endif %}
+<!-- Google Analytics (UA deprecated, kept for reference) -->
+{% comment %} GA UA has been shut down since July 2023 {% endcomment %}
 
 
-<!-- Baidu Tongji -->
+<!-- Baidu Tongji: loaded after page interactive to avoid blocking scroll -->
 {% if site.ba_track_id %}
 <script>
-    // dynamic User by Hux
+    // Delay Baidu Analytics until page is fully idle
     var _baId = '{{ site.ba_track_id }}';
-
-    // Originial
     var _hmt = _hmt || [];
-    (function() {
+    function _loadBaidu() {
       var hm = document.createElement("script");
       hm.src = "//hm.baidu.com/hm.js?" + _baId;
-      var s = document.getElementsByTagName("script")[0];
-      s.parentNode.insertBefore(hm, s);
-    })();
+      hm.async = true;
+      hm.defer = true;
+      document.body.appendChild(hm);
+    }
+    if (window.requestIdleCallback) {
+      requestIdleCallback(_loadBaidu, { timeout: 3000 });
+    } else {
+      window.addEventListener('load', function() {
+        setTimeout(_loadBaidu, 1000);
+      });
+    }
 </script>
 {% endif %}
 
