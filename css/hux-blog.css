@@ -1151,3 +1151,56 @@ img::-moz-selection {
   color: #ddd;
 }
 
+
+
+/* ============================================================
+ * iOS / Mobile Scroll Performance Optimizations
+ * ============================================================ */
+
+/* 1. 启用 iOS 原生惯性滚动，消除滑动卡顿感 */
+html, body {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 2. 为 navbar 开启 GPU 合成层，避免滚动时重绘导致卡顿 */
+.navbar-custom {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* 3. 为头图区域关闭 pointer-events，避免触摸事件穿透消耗 */
+.intro-header .header-mask {
+  pointer-events: none;
+}
+
+/* 4. 图片懒加载占位：防止图片加载时触发大量重排 */
+.post-container img {
+  height: auto;
+  max-width: 100%;
+  display: block;
+}
+
+/* 5. 移动端减少不必要的 box-shadow 重绘开销 */
+@media (max-width: 767px) {
+  .navbar-custom.is-fixed {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+
+  /* 移动端侧边栏目录不需要 fixed 定位，避免触发合成层切换 */
+  .side-catalog.fixed {
+    position: static;
+  }
+
+  /* 触摸区域扩大，减少误触导致的事件处理开销 */
+  .pager li > a {
+    padding: 12px 20px;
+  }
+}
+
+/* 6. 对包含大量内容的容器开启 contain，限制重排范围 */
+.post-container {
+  contain: layout style;
+}

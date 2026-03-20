@@ -45,19 +45,30 @@ $(document).ready(function() {
 jQuery(document).ready(function($) {
     var MQL = 1170;
 
+    // Throttle helper: limit scroll handler firing rate to improve mobile performance
+    function throttle(fn, wait) {
+        var last = 0;
+        return function() {
+            var now = Date.now();
+            if (now - last >= wait) {
+                last = now;
+                fn.apply(this, arguments);
+            }
+        };
+    }
+
     //primary navigation slide-in effect
     if ($(window).width() > MQL) {
         var headerHeight = $('.navbar-custom').height(),
-            bannerHeight  = $('.intro-header .container').height();     
-        $(window).on('scroll', {
-                previousTop: 0
-            },
-            function() {
+            bannerHeight  = $('.intro-header .container').height();
+        var previousTop = 0;
+
+        $(window).on('scroll', throttle(function() {
                 var currentTop = $(window).scrollTop(),
                     $catalog = $('.side-catalog');
 
-                //check if user is scrolling up by mouse or keyborad
-                if (currentTop < this.previousTop) {
+                //check if user is scrolling up by mouse or keyboard
+                if (currentTop < previousTop) {
                     //if scrolling up...
                     if (currentTop > 0 && $('.navbar-custom').hasClass('is-fixed')) {
                         $('.navbar-custom').addClass('is-visible');
@@ -69,16 +80,15 @@ jQuery(document).ready(function($) {
                     $('.navbar-custom').removeClass('is-visible');
                     if (currentTop > headerHeight && !$('.navbar-custom').hasClass('is-fixed')) $('.navbar-custom').addClass('is-fixed');
                 }
-                this.previousTop = currentTop;
-
+                previousTop = currentTop;
 
                 //adjust the appearance of side-catalog
-                $catalog.show()
+                $catalog.show();
                 if (currentTop > (bannerHeight + 41)) {
-                    $catalog.addClass('fixed')
+                    $catalog.addClass('fixed');
                 } else {
-                    $catalog.removeClass('fixed')
+                    $catalog.removeClass('fixed');
                 }
-            });
+            }, 100));
     }
 });
