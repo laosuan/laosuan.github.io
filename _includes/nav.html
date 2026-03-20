@@ -80,9 +80,16 @@
      *
      * Also, we use 'click' instead of 'touchstart' as compromise
      */
+    // Use passive touchstart instead of click to avoid 300ms iOS delay
+    document.addEventListener('touchstart', function(e){
+        if(e.target == $toggle) return;
+        if(e.target.className == 'icon-bar') return;
+        __HuxNav__.close();
+    }, { passive: true });
+    // Fallback for non-touch devices
     document.addEventListener('click', function(e){
         if(e.target == $toggle) return;
         if(e.target.className == 'icon-bar') return;
         __HuxNav__.close();
-    })
+    });
 </script>
